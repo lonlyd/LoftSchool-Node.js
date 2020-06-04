@@ -7,16 +7,22 @@ const readDir = (filesDir) => {
     const files = fs.readdirSync(filesDir);
     files.forEach(element => {
         let localBase = path.join(filesDir, element);
-        let state = fs.statSync(localBase);
-        if (state.isDirectory()) {
-            readDir(localBase);
+        let state = fs.stat(localBase, (err, stats) => {
+            if (err) {
+                console.log(err);
+                return;
         } else {
-            let filename = path.basename(element);
-            let firstLetter = filename[0];
-            createDir(firstLetter);
-            console.log('Create dir ' + firstLetter + ' done');
-            moveFiles(localBase, firstLetter);
-        }
+            if (stats.isDirectory()) {
+                readDir(localBase);
+            } else {
+                let filename = path.basename(element);
+                let firstLetter = filename[0];
+                createDir(firstLetter);
+                let destination = path.join(finalDir, firstLetter, element);
+                console.log('Create dir ' + firstLetter + ' done');
+                moveFiles(localBase, destination);
+            }
+        }});
     });
 }
 
@@ -43,13 +49,13 @@ const createDir = (firstLetter) => {
 }
 
 const moveFiles = (file, destination) => {
-    try {
-        let dest = path.join(finalDir, destination);
-        fs.renameSync(file, dest);
-        console.info('Move files done!')
-    } catch (err) {
-        console.log(err)
-    }
+    fs.rename(file, destination, (err) => {
+        if (err) {
+            return console.log(err)
+        } else {
+            console.info('Move files done!')
+        }
+    });
 }
 
 readDir(filesDir);
