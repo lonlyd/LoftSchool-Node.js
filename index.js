@@ -11,18 +11,19 @@ const readDir = (filesDir) => {
             if (err) {
                 console.log(err);
                 return;
-        } else {
-            if (stats.isDirectory()) {
-                readDir(localBase);
             } else {
-                let filename = path.basename(element);
-                let firstLetter = filename[0];
-                createDir(firstLetter);
-                let destination = path.join(finalDir, firstLetter, element);
-                console.log('Create dir ' + firstLetter + ' done');
-                moveFiles(localBase, destination);
+                if (stats.isDirectory()) {
+                    readDir(localBase);
+                } else {
+                    let filename = path.basename(element);
+                    let firstLetter = filename[0];
+                    createDir(firstLetter);
+                    let destination = path.join(finalDir, firstLetter, element);
+                    console.log('Create dir ' + firstLetter + ' done');
+                    moveFiles(localBase, destination);
+                }
             }
-        }});
+        });
     });
 }
 
@@ -39,12 +40,12 @@ try {
 
 const createDir = (firstLetter) => {
     let newDir = path.join(finalDir, firstLetter);
-    try {
-        if (!fs.existsSync(newDir)) {
-            fs.mkdirSync(newDir);
-        }
-    } catch (err) {
-        console.error(err)
+    if (!fs.existsSync(newDir)) {
+        fs.mkdir(newDir, (err) => {
+            if (err) {
+                console.log(err);
+            }
+        });
     }
 }
 
