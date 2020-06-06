@@ -28,14 +28,14 @@ const readDir = (filesDir) => {
 }
 
 // Make Final directory
-try {
-    if (!fs.existsSync('final')) {
-        fs.mkdirSync('final')
-    } else {
-        console.info('The "final" directory is exists');
-    }
-} catch (err) {
-    console.error(err)
+if (!fs.existsSync('final')) {
+    fs.mkdir('final', (err) => {
+        if (err) {
+            console.log(err)
+        }
+    });
+} else {
+    console.info('The "final" directory is exists');
 }
 
 const createDir = (firstLetter) => {
