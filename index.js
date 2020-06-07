@@ -7,7 +7,7 @@ const readDir = (filesDir) => {
     const files = fs.readdirSync(filesDir);
     files.forEach(element => {
         let localBase = path.join(filesDir, element);
-        let state = fs.stat(localBase, (err, stats) => {
+        fs.stat(localBase, (err, stats) => {
             if (err) {
                 console.log(err);
                 return;
@@ -17,10 +17,8 @@ const readDir = (filesDir) => {
                 } else {
                     let filename = path.basename(element);
                     let firstLetter = filename[0];
-                    createDir(firstLetter);
                     let destination = path.join(finalDir, firstLetter, element);
-                    console.log('Create dir ' + firstLetter + ' done');
-                    moveFiles(localBase, destination);
+                    createDir(firstLetter, localBase, destination);
                 }
             }
         });
@@ -38,14 +36,20 @@ if (!fs.existsSync('final')) {
     console.info('The "final" directory is exists');
 }
 
-const createDir = (firstLetter) => {
+const createDir = (firstLetter, localBase, destination) => {
     let newDir = path.join(finalDir, firstLetter);
     if (!fs.existsSync(newDir)) {
         fs.mkdir(newDir, (err) => {
             if (err) {
                 console.log(err);
+            } else {
+                console.log('Create dir ' + firstLetter + ' done');
+                moveFiles(localBase, destination);
             }
         });
+    } else {
+        moveFiles(localBase, destination);
+        console.info('The directory is exists');
     }
 }
 
