@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const db = require('../../db/db.js');
 
+
 module.exports.get = function (req, res) {
   res.render('./pages/admin', {
     title: 'Admin',

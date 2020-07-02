@@ -1,6 +1,7 @@
 const db = require('../../db/db.js');
 
 module.exports.get = function (req, res) {
+  console.log('Routes is working');
   res.render('./pages/index', {
     title: 'Homepage',
   });
